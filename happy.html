@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Happy Teacher's Day — Ehsan Ehrari</title>
+<style>
+:root {
+  --bg:#F0FBFF;
+  --card:#ffffff;
+  --blue:#0B63FF;
+  --turq:#00B7C2;
+  --muted:#2d3a46;
+  --muted-2:#6b7785;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:Vazirmatn,system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans',sans-serif;
+  background:linear-gradient(180deg,var(--bg),#EAF8FF);display:flex;align-items:center;justify-content:center;padding:24px}
+.frame{width:980px;max-width:96%;}
+.card{background:linear-gradient(180deg,#fff,#fbfeff);border-radius:16px;padding:22px;
+  box-shadow:0 14px 40px rgba(11,40,80,0.08);position:relative;overflow:hidden}
+header{display:flex;align-items:center;gap:14px}
+.logo{width:70px;height:70px;border-radius:14px;background:linear-gradient(135deg,var(--blue),var(--turq));
+  display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:24px}
+h1{margin:0;font-size:18px}
+p.lead{margin:6px 0 0;color:var(--muted)}
+
+/* splash */
+.splash{position:relative;margin-top:18px;min-height:260px;display:flex;align-items:center;justify-content:center}
+.splashBox{position:absolute;right:18px;top:18px;background:linear-gradient(135deg,rgba(11,99,255,0.06),rgba(0,183,194,0.04));
+  padding:14px;border-radius:12px;transform:translate(30px,-30px) scale(0.9);opacity:0;transition:all 700ms cubic-bezier(.2,.9,.2,1)}
+.splashBox.show{transform:translate(0,0) scale(1);opacity:1}
+.splashCenter{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.splashCenter h2{margin:0;color:var(--blue);font-size:28px}
+.splashCenter p{margin:0;color:var(--muted)}
+.ctl{margin-top:10px;display:flex;gap:10px;justify-content:center}
+.btn{padding:10px 14px;border-radius:12px;border:0;font-weight:700;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--blue),var(--turq));color:#fff}
+.btn.ghost{background:transparent;border:1px solid rgba(11,99,255,0.08);color:var(--blue)}
+
+/* main area */
+.main{display:none;padding:18px;opacity:0;transition:opacity 0.45s ease}
+.hero{display:flex;gap:18px;align-items:center}
+.portrait{width:160px;height:160px;border-radius:12px;overflow:hidden;border:5px solid rgba(11,99,255,0.06);box-shadow:0 12px 30px rgba(11,40,80,0.06)}
+.portrait img{width:100%;height:100%;object-fit:cover}
+.greet h3{margin:0;color:var(--blue)}
+.greet p{margin:8px 0 0;color:var(--muted)}
+.typed{margin-top:12px;padding:14px;border-radius:12px;background:linear-gradient(90deg,rgba(11,99,255,0.03),rgba(0,183,194,0.02));
+  min-height:120px;border:1px solid rgba(11,99,255,0.04);white-space:pre-wrap;color:#123;line-height:1.5}
+.signature{margin-top:12px;color:var(--turq);font-weight:600;opacity:0;transition:opacity 600ms}
+#confetti{position:absolute;inset:0;pointer-events:none;z-index:40}
+
+/* music control button (fixed, subtle) */
+#musicBtn{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:120;
+  background:linear-gradient(90deg,var(--blue),var(--turq));
+  color:#fff;
+  border:0;padding:10px 14px;border-radius:12px;font-weight:700;
+  box-shadow:0 8px 20px rgba(11,99,255,0.12);cursor:pointer;
+  display:flex;gap:8px;align-items:center;
+}
+#musicBtn.playing{box-shadow:0 12px 28px rgba(0,183,194,0.18);transform:translateY(-2px);}
+
+/* small icon */
+.music-dot{width:8px;height:8px;border-radius:50%;background:#fff;opacity:0.9;transform:scale(0.9)}
+
+/* tooltip text for accessibility */
+#musicBtn span{font-size:14px}
+
+/* mobile adjust */
+@media(max-width:520px){#musicBtn{right:12px;bottom:12px;padding:9px 10px;font-size:13px}}
+@media(max-width:820px){.hero{flex-direction:column;align-items:center}.portrait{width:140px;height:140px}}
+</style>
+</head>
+<body>
+
+<!-- Background music: autoplay attr + JS fallback (first-interaction start) -->
+<audio id="bgMusic" autoplay loop preload="auto" playsinline>
+  <source src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/ccCommunity/Scott_Holmes_Music/Corporate_Motivation/Scott_Holmes_Music_-_01_-_Corporate_Motivation.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+<div class="frame">
+  <div class="card" id="card">
+    <canvas id="confetti"></canvas>
+    <header>
+      <div class="logo">TD</div>
+      <div>
+        <h1>Happy Teacher's Day — Ehsan Ehrari</h1>
+        <p class="lead">Honoring the teacher who guided me through my first line of code</p>
+      </div>
+    </header>
+
+    <div class="splash" id="splash">
+      <div class="splashCenter">
+        <h2 id="sTitle">Happy Teacher's Day, Ehsan Ehrari</h2>
+        <p id="sSub">Thank you for teaching coding and inspiring us.</p>
+        <div class="ctl">
+          <button class="btn primary" id="startBtn">Yay! Let's celebrate 🎈</button>
+          <button class="btn ghost" id="previewBtn">Preview message</button>
+        </div>
+      </div>
+      <div class="splashBox" id="splashBox">Tap to celebrate 🎉</div>
+    </div>
+
+    <div class="main" id="main">
+      <div class="hero">
+        <div class="portrait" id="portrait">
+          <img id="photo" src="teacher.jpg" alt="photo">
+        </div>
+        <div class="greet">
+          <h3>Dear Teacher Ehsan Ehrari — thank you!</h3>
+          <p class="lead">To the teacher who introduced me to my very first line of code</p>
+        </div>
+      </div>
+      
+      <div class="typed" id="typed"></div>
+      <div class="signature" id="sig">
+        <a href="https://marjan-habibi.github.io/marjanhabibi_portfolio-/" style="color:var(--turq);text-decoration:none">
+          — With respect, Marjan Habibi & classmates
+        </a>
+      </div>
+
+      <div style="margin-top:12px;display:flex;gap:10px">
+        <button class="btn primary" id="replay">Replay 🔁</button>
+        <button class="btn ghost" id="editBtn">Edit</button>
+        <button class="btn" id="download">Download</button>
+      </div>
+
+      <!-- edit modal -->
+      <div id="modal" style="display:none;position:fixed;inset:0;background:rgba(8,12,20,0.5);align-items:center;justify-content:center;z-index:90">
+        <div style="background:#fff;padding:16px;border-radius:12px;max-width:720px;width:92%;box-shadow:0 10px 30px rgba(11,40,80,0.08)">
+          <h3>Edit message</h3>
+          <textarea id="editText" rows="6" style="width:100%;padding:10px;border-radius:8px">Dear Ehsan, thank you for your dedication and guidance in coding.
+I still remember the first line you taught: console.log('Hello, world!');
+          </textarea>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="btn primary" id="save">Save</button>
+            <button class="btn" id="close">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Music toggle button (shows current state) -->
+<button id="musicBtn" aria-pressed="false" title="Toggle background music">
+  <div class="music-dot" id="musicDot" style="display:none"></div>
+  <span id="musicLabel">Play Music 🎵</span>
+</button>
+
+<script>
+// confetti
+const canvas=document.getElementById('confetti'), ctx=canvas.getContext('2d');
+function resize(){canvas.width=canvas.clientWidth;canvas.height=canvas.clientHeight;} window.addEventListener('resize',resize); resize();
+function rand(a,b){return Math.random()*(b-a)+a}
+let pieces=[]; function spawn(n=80){pieces=[];for(let i=0;i<n;i++){pieces.push({x:rand(0,canvas.width),y:rand(-canvas.height,0),w:rand(6,12),h:rand(8,16),vx:rand(-2,2),vy:rand(2,6),rot:rand(0,360),vr:rand(-8,8),c:['#00B7C2','#0B63FF','#7FD6E2','#B7EAF0'][Math.floor(rand(0,4))]})}}
+function step(){ctx.clearRect(0,0,canvas.width,canvas.height);for(let p of pieces){p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;p.vy*=1.01;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.c;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();}pieces=pieces.filter(p=>p.y<canvas.height+40);requestAnimationFrame(step)} spawn(0); step();
+function playConfetti(){spawn(140);} function pop(){try{const a=new(window.AudioContext||window.webkitAudioContext)();const o=a.createOscillator();const g=a.createGain();o.type='sine';o.frequency.value=880;g.gain.setValueAtTime(0.02,a.currentTime);o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+0.12);}catch(e){}}
+
+// typing
+const typed=document.getElementById('typed'), sig=document.getElementById('sig');
+let messages = [
+  "Dear esteemed teacher Ehsan Ehrari,\nThank you for your dedication and guidance in coding.",
+  "You have made coding accessible and enjoyable — I still remember the first line you taught: console.log('Hello, world!');",
+  "With heartfelt gratitude — Marjan Habibi"
+];
+function typeAll(i=0,done){
+  if(i>=messages.length){if(done)done();return;}
+  const msg=messages[i]; let j=0; function step(){
+    if(j<=msg.length){typed.textContent=msg.slice(0,j); j++; setTimeout(step,(msg[j-1]===' ')?10:24);}
+    else{typed.textContent+='\n'; setTimeout(()=>typeAll(i+1,done),420);}
+  } step();
+}
+
+// splash entrance
+const splashBox=document.getElementById('splashBox'); setTimeout(()=>splashBox.classList.add('show'),300);
+
+// buttons & DOM refs
+const startBtn=document.getElementById('startBtn'), previewBtn=document.getElementById('previewBtn');
+const main=document.getElementById('main'), splash=document.getElementById('splash');
+const replayBtn=document.getElementById('replay'), editBtn=document.getElementById('editBtn');
+const modal=document.getElementById('modal'), saveBtn=document.getElementById('save'), closeBtn=document.getElementById('close');
+const editText=document.getElementById('editText'), download=document.getElementById('download');
+const portrait=document.getElementById('portrait'), photo=document.getElementById('photo');
+
+// background music control & autoplay attempt
+const bgMusic = document.getElementById('bgMusic');
+bgMusic.volume = 0.12; // gentle volume
+bgMusic.preload = 'auto';
+
+const musicBtn = document.getElementById('musicBtn');
+const musicLabel = document.getElementById('musicLabel');
+const musicDot = document.getElementById('musicDot');
+let musicPlaying = false;
+
+// try autoplay on load
+window.addEventListener('load', async ()=>{
+  try{
+    await bgMusic.play();
+    musicPlaying = true;
+    musicBtn.classList.add('playing');
+    musicLabel.textContent = 'Pause Music ⏸';
+    musicDot.style.display='block';
+  }catch(err){
+    // autoplay blocked — will start on first user interaction
+    musicPlaying = false;
+    musicLabel.textContent = 'Play Music 🎵';
+    musicDot.style.display='none';
+    // attach one-time listeners for first interaction
+    const startOnInteraction = async ()=>{ try{ await bgMusic.play(); musicPlaying=true; musicBtn.classList.add('playing'); musicLabel.textContent='Pause Music ⏸'; musicDot.style.display='block'; }catch(e){} finally { window.removeEventListener('pointerdown', startOnInteraction); window.removeEventListener('touchstart', startOnInteraction); window.removeEventListener('keydown', startOnInteraction); } };
+    window.addEventListener('pointerdown', startOnInteraction, {once:true});
+    window.addEventListener('touchstart', startOnInteraction, {once:true});
+    window.addEventListener('keydown', startOnInteraction, {once:true});
+  }
+});
+
+// music button toggle
+musicBtn.addEventListener('click', async () => {
+  try {
+    if (!musicPlaying) {
+      await bgMusic.play();
+      musicPlaying = true;
+      musicBtn.classList.add('playing');
+      musicLabel.textContent = 'Pause Music ⏸';
+      musicBtn.setAttribute('aria-pressed','true');
+      musicDot.style.display = 'block';
+    } else {
+      bgMusic.pause();
+      musicPlaying = false;
+      musicBtn.classList.remove('playing');
+      musicLabel.textContent = 'Play Music 🎵';
+      musicBtn.setAttribute('aria-pressed','false');
+      musicDot.style.display = 'none';
+    }
+  } catch (err) {
+    musicLabel.textContent = 'Tap to allow audio';
+    console.warn('Music playback failed:', err);
+  }
+});
+
+// actions that also try to ensure music plays
+async function ensurePlayMusic(){ if(!musicPlaying){ try{ await bgMusic.play(); musicPlaying=true; musicBtn.classList.add('playing'); musicLabel.textContent='Pause Music ⏸'; musicDot.style.display='block'; }catch(e){} } }
+
+startBtn.addEventListener('click',()=>{
+  playConfetti(); pop();
+  ensurePlayMusic();
+  splash.style.transition='opacity 0.5s ease, transform 0.5s ease'; splash.style.opacity=0; splash.style.transform='scale(0.98)';
+  setTimeout(()=>{ splash.style.display='none'; main.style.display='block'; setTimeout(()=> main.style.opacity=1,60); typeAll(0,()=>{sig.style.opacity=1;}); },520);
+});
+previewBtn.addEventListener('click',()=>{ typed.textContent=''; typeAll(0,()=>{ sig.style.opacity=1; }); playConfetti(); pop(); ensurePlayMusic(); });
+replayBtn.addEventListener('click',()=>{ typed.textContent=''; sig.style.opacity=0; playConfetti(); pop(); ensurePlayMusic(); setTimeout(()=>typeAll(0,()=>sig.style.opacity=1),180); });
+
+// edit modal
+editBtn.addEventListener('click',()=> modal.style.display='flex');
+closeBtn.addEventListener('click',()=> modal.style.display='none');
+saveBtn.addEventListener('click',()=>{ const v=editText.value.trim(); if(v) messages=v.split('\n'); modal.style.display='none'; typed.textContent=''; sig.style.opacity=0; setTimeout(()=>typeAll(0,()=> sig.style.opacity=1),200); });
+
+// download
+download.addEventListener('click',()=>{ const html='<!doctype html>\n'+document.documentElement.outerHTML; const blob=new Blob([html],{type:'text/html'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='ehsan-greeting.html'; a.click(); URL.revokeObjectURL(url); });
+
+// photo upload
+const file=document.createElement('input'); file.type='file'; file.accept='image/*'; file.style.display='none'; document.body.appendChild(file);
+portrait.addEventListener('click',()=> file.click());
+file.addEventListener('change',e=>{ const f=e.target.files && e.target.files[0]; if(!f)return; const r=new FileReader(); r.onload=ev=>photo.src=ev.target.result; r.readAsDataURL(f); });
+
+// keyboard
+window.addEventListener('keydown',e=>{ if(e.key==='Escape') modal.style.display='none'; });
+</script>
+</body>
+</html>
